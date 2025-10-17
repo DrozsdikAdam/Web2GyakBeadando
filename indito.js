@@ -9,6 +9,8 @@ const adminRoutes = require("./routes/admin")
 dotenv.config();
 const app = express();
 
+app.use(express.static('public'));
+
 // routes
 app.use("/", indexRoutes)
 app.use("/auth", authRoutes)
