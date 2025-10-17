@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
             role: role || 'user'
         })
 
-        req.session.user = { id: newUser.id, username: newUser.username, role: newUser.role }
+        req.session.user = { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role }
 
         res.status(201).json({ message: 'Sikeres regisztráció', userId: newUser.id })
     } catch (err) {
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
         const ok = await bcrypt.compare(password, user.password)
         if (!ok) return res.status(401).json({ error: 'Hibás jelszó' })
 
-        req.session.user = { id: user.id, username: user.username, role: user.role }
+        req.session.user = { id: user.id, username: user.username, email: user.email, role: user.role }
         res.status(200).json({ message: 'Sikeres bejelentkezés', user: req.session.user })
 
     } catch (err) {
@@ -62,3 +62,5 @@ router.post('/logout', (req, res) => {
         res.json({ message: 'Sikeres kijelentkezés' });
     })
 })
+
+module.exports = router;
