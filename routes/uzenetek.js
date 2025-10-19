@@ -1,6 +1,7 @@
 const express = require('express')
 const { isAuth, isAdmin } = require('../config/auth')
 //const Uzenet = require('../models/Uzenet') //Üzenetmodell importálás
+const { Message } = require('../models/messages.model');
 
 const router = express.Router()
 
@@ -12,7 +13,7 @@ router.post('/send', isAuth, async (req, res) => {
         const { uzenet } = req.body;
         if (!uzenet) return res.status(400).json({ error: 'Hiányzó üzenet!' })
 
-        const saved = await Uzenet.create({
+        const saved = await Message.create({
             nev: req.session.user.username,
             email: req.session.user.email,
             uzenet,
@@ -30,7 +31,7 @@ router.post('/send', isAuth, async (req, res) => {
 
 router.get('/', isAdmin, async (req, res) => {
     try {
-        const messages = await Uzenet.findAll({ order: [["kuldesIdeje", 'DESC']] })
+        const messages = await Message.findAll({ order: [["kuldesIdeje", 'DESC']] })
         res.json(messages);
     } catch (err) {
         console.error(err);
