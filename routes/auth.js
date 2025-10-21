@@ -3,7 +3,17 @@ const bcrypt = require('bcrypt');
 //felhasználó modell importálása
 const { User } = require('../models');
 
-const router = express.Router()
+const router = express.Router();
+
+// Render signin page
+router.get('/signin', (req, res) => {
+    res.render('signin', { path: '/auth/signin' });
+});
+
+// Render signup page
+router.get('/signup', (req, res) => {
+    res.render('signup', { path: '/auth/signup' });
+});
 
 //Regisztráció
 router.post('/register', async (req, res) => {
