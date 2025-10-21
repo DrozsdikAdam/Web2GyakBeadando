@@ -4,11 +4,11 @@ const path = require('path');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'public', 'html', 'index.html'));
+    res.render('index');
 })
 
 router.get('/contact', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'public', 'html', 'contact.html'))
+    res.render('contact');
 })
 
 module.exports = router;

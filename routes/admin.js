@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Admin főoldal (HTML)
 router.get('/', isAdmin, (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'public', 'html', 'admin.html'));
+    res.render('admin');
 });
 
 // Példa: statisztika - sorok száma a fontos táblákban
