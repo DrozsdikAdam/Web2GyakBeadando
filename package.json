@@ -20,6 +20,7 @@
     "ejs": "^3.1.10",
     "ejs-layout": "^1.0.15",
     "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.2",
     "mysql2": "^3.15.2",
     "postcss": "^8.5.6",
