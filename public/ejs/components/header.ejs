@@ -47,6 +47,7 @@
                   Home
                 </a>
               </li>
+              <% if (role === 'admin') { %>
               <li class="relative group">
                 <a
                   href="/admin"
@@ -63,6 +64,8 @@
                   Messages
                 </a>
               </li>
+              <% } %>
+              <% if (role === 'regisztralt') { %>
               <li class="relative group">
                 <a
                   href="/crud"
@@ -71,20 +74,13 @@
                   CRUD
                 </a>
               </li>
+              <% } %>
               <li class="relative group">
                 <a
                   href="/database"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/database' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   Database
-                </a>
-              </li>
-              <li class="relative group">
-                <a
-                  href="/404"
-                  class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/404' ? 'text-primary dark:text-primary' : '' %>"
-                >
-                  404 Page
                 </a>
               </li>
               <li class="relative group">
@@ -172,23 +168,34 @@
             </span>
           </label>
           <div class="hidden sm:flex">
-            <a
-              href="/auth/signin"
-              class="loginBtn py-2 px-[22px] text-base font-medium text-black dark:text-white hover:opacity-70"
-            >
-              Sign In
-            </a>
-            <a
-              href="/auth/signup"
-              class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-primary hover:bg-blue-dark"
-            >
-              Sign Up
-            </a>
+            <% if (role === 'regisztralt') { %>
+              <span class="py-2 px-4 text-base font-medium text-black dark:text-white">
+                Üdv, <%= user.username %>
+              </span>
+              <a
+                href="/auth/signout"
+                class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-red-500 hover:bg-red-600"
+              >
+                Sign Out
+              </a>
+            <% } else { %>
+              <a
+                href="/auth/signin"
+                class="loginBtn py-2 px-[22px] text-base font-medium text-black dark:text-white hover:opacity-70"
+              >
+                Sign In
+              </a>
+              <a
+                href="/auth/signup"
+                class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-primary hover:bg-blue-dark"
+              >
+                Sign Up
+              </a>
+            <% } %>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- ====== Navbar Section End -->
 <!-- ====== Navbar Section End -->

@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-//Create
+//Create 
 
 router.post('/create', isAuth, async (req, res) => {
     try {
@@ -41,7 +41,7 @@ router.post('/create', isAuth, async (req, res) => {
     }
 })
 
-// Update
+// Update  
 
 router.put('/:id', isAuth, async (req, res) => {
     try {
@@ -56,7 +56,7 @@ router.put('/:id', isAuth, async (req, res) => {
     }
 });
 
-//Delete
+//Delete 
 
 router.delete('/:id', isAuth, async (req, res) => {
     try {

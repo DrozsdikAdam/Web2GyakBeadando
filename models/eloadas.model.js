@@ -1,21 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     const Eloadas = sequelize.define('Eloadas', {
-        
         filmid: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'film',
-                key: 'id'
-            }
+            allowNull: false
         },
         moziid: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'mozi',
-                key: 'id'
-            }
         },
         datum: {
             type: DataTypes.DATE,
