@@ -19,6 +19,9 @@ app.set('views', path.join(__dirname, 'public', 'ejs'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// A db objektum tartalmazza a sequelize példányt és az összes modellt
+const { sequelize } = require("./models");
+
 // Session beállítása
 app.use(session({
     secret: process.env.SESSION_SECRET || 'nagyon-titkos-kulcs', // A titkos kulcsot .env fájlból olvassuk
@@ -45,6 +48,19 @@ app.use("/crud", crudRoutes)
 app.use("/uzenetek", uzenetRoutes)
 app.use("/admin", adminRoutes)
 
-//server indítás
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+const startServer = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("DB kapcsolódva");
+        await sequelize.sync({ alter: true });
+        console.log("Modellek szinkronizálva");
+
+        //server indítás
+        const PORT = process.env.PORT || 3000
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+    } catch (err) {
+        console.error("Szerver indítási hiba (DB probléma):", err);
+    }
+};
+
+startServer();
