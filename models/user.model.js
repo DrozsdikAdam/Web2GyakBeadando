@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         role: {
             type: DataTypes.ENUM('latogato', 'regisztralt', 'admin'),
-            defaultValue: 'regisztralt'
+            defaultValue: 'latogato'
         }
     }, {
         tableName: 'users'

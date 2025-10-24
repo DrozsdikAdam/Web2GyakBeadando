@@ -25,10 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         userId: {
             type: DataTypes.INTEGER,
             allowNull: true, // Lehetővé tesszük a NULL értéket, ha vannak régi üzenetek felhasználó nélkül
-            references: {
-                model: 'users', // A tábla neve, amire hivatkozunk
-                key: 'id'       // Az oszlop neve, amire hivatkozunk
-            }
         }
     }, {
         tableName: 'messages'
