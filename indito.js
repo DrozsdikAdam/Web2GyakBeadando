@@ -49,6 +49,12 @@ app.use("/crud", crudRoutes)
 app.use("/uzenetek", uzenetRoutes)
 app.use("/admin", adminRoutes)
 
+// 404-es oldal kezelése - minden nem létező útvonalat ide irányítunk
+app.use((req, res, next) => {
+    res.status(404).render('404', { title: 'Oldal nem található' });
+});
+
+
 /**
  * Beolvas egy ANSI kódolású, pontosvesszővel tagolt TXT fájlt, kihagyja a fejlécet,
  * és objektumok tömbjévé alakítja a sorokat a megadott oszlopnevek alapján.
