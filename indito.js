@@ -38,7 +38,9 @@ app.use(expressLayouts);
 
 // Global variables for all views
 app.use((req, res, next) => {
-    res.locals.path = req.path;  // Make path available to all views
+    res.locals.path = req.path;
+    res.locals.user = req.session.user || null;
+    res.locals.role = req.session.role || 'latogato';
     next();
 });
 
