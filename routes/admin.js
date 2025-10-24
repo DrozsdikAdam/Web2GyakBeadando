@@ -8,12 +8,10 @@ const { db } = require('../models/index');
 
 const router = express.Router();
 
-// Admin főoldal (HTML)
-router.get('/', isAdmin, (req, res) => {
-    res.render('admin', { path: '/admin' });
-});
+// Admin főoldal (HTML) 
 
-// Példa: statisztika - sorok száma a fontos táblákban
+
+// Példa: statisztika - sorok száma a fontos táblákban 
 router.get('/stats', isAdmin, async (req, res) => {
     try {
         const felhasznaloCount = await User.count();
@@ -26,7 +24,7 @@ router.get('/stats', isAdmin, async (req, res) => {
     }
 });
 
-// Példa admin: felhasználók listája
+// Példa admin: felhasználók listája  
 router.get('/felhasznalok', isAdmin, async (req, res) => {
     try {
         const users = await User.findAll({ attributes: ['id', 'username', 'email', 'role'] });
