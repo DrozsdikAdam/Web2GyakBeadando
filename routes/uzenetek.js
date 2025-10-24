@@ -1,6 +1,5 @@
 const express = require('express')
 const { isAuth, isAdmin } = require('../config/auth')
-//const Uzenet = require('../models/Uzenet') //Üzenetmodell importálás
 const { Message } = require('../models/messages.model');
 
 const router = express.Router()
@@ -17,7 +16,7 @@ router.post('/send', isAuth, async (req, res) => {
             nev: req.session.user.username,
             email: req.session.user.email,
             uzenet,
-            kuldesIdeje: new Date()
+            userId: req.session.user.id
         })
 
         res.status(200).json({ message: 'Üzenet elküldve', id: saved.id })
@@ -31,7 +30,7 @@ router.post('/send', isAuth, async (req, res) => {
 
 router.get('/', isAdmin, async (req, res) => {
     try {
-        const messages = await Message.findAll({ order: [["kuldesIdeje", 'DESC']] })
+        const messages = await Message.findAll({ order: [["id", 'DESC']] })
         res.json(messages);
     } catch (err) {
         console.error(err);
