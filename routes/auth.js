@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
         if (existing) return res.status(409).json({ error: 'A felhasználónév vagy az email cím már foglalt!' });
 
         const hash = await bcrypt.hash(password, 10); //password encoding
-        const newUser = await User.create({
+        const newUser = await db.User.create({
             username,
             email,
             password: hash,
