@@ -1,2 +1,126 @@
- <%- include('components/databaseComponents/banner') %>
- <%- include('components/databaseComponents/blog-details') %>
+<section class="w-full py-20 dark:bg-dark-2 bg-white dark:text-white lg:py-[120px]">
+    <div class="container mx-auto">
+        <div class="w-full px-4">
+            <div class="max-w-full mx-auto text-center mb-12">
+                <h2 class="font-bold text-3xl sm:text-4xl md:text-[40px] text-dark dark:text-white mb-4">
+                    Adatbázis Adatok
+                </h2>
+                <p class="text-base text-body-color dark:text-dark-6">
+                    Válassz egy táblát a lenyíló menüből az adatok megtekintéséhez.
+                </p>
+            </div>
+        </div>
+
+        <div class="w-full px-4">
+            <div class="max-w-xl mx-auto mb-8">
+                <label for="table-select" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Válassz táblát:</label>
+                <select id="table-select" class="w-full rounded-md border border-stroke dark:border-dark-3 bg-white dark:bg-dark py-3 px-5 text-base text-body-color outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 dark:disabled:bg-dark-2">
+                    <option selected value="">Válassz...</option>
+                    <% tables.forEach(table => { %>
+                        <option class="text-body-color" value="<%= table %>"><%= table %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div id="table-container" class="overflow-x-auto relative py-4 shadow-md sm:rounded-lg">
+                <!-- A táblázat ide lesz generálva JavaScripttel -->
+            </div>
+             <div id="loading-spinner" class="text-center py-8 hidden">
+                <p class="text-primary">Adatok betöltése...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tableSelect = document.getElementById('table-select');
+        const tableContainer = document.getElementById('table-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        // Szótár a kulcsok (oszlopnevek) és a megjelenítendő nevek között
+        const displayNameMap = {
+            // Film tábla
+            id: 'ID',
+            cim: 'Cím',
+            ev: 'Év',
+            hossz: 'Hossz (perc)',
+
+            // Mozi tábla
+            nev: 'Név',
+            varos: 'Város',
+            ferohely: 'Férőhely',
+
+            // Eloadas tábla
+            filmid: 'Film ID',
+            moziid: 'Mozi ID',
+            datum: 'Dátum',
+            nezoszam: 'Nézőszám',
+            bevetel: 'Bevétel (Ft)',
+        };
+
+        tableSelect.addEventListener('change', async (event) => {
+            const tableName = event.target.value;
+            tableContainer.innerHTML = ''; // Tároló ürítése
+
+            if (!tableName) {
+                return;
+            }
+
+            loadingSpinner.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`/database/data/${tableName}`);
+                if (!response.ok) {
+                    throw new Error('Hálózati hiba történt.');
+                }
+                const data = await response.json();
+
+                if (data.length === 0) {
+                    tableContainer.innerHTML = '<p class="text-center text-body-color dark:text-dark-6 py-4">A tábla üres.</p>';
+                    return;
+                }
+
+                // Táblázat generálása
+                const table = document.createElement('table');
+                table.className = 'min-w-full w-full text-sm text-left text-body-color dark:text-dark-6';
+
+                const thead = document.createElement('thead');
+                thead.className = 'text-xs font-semibold uppercase bg-gray-1 dark:bg-dark-3';
+                const headerRow = document.createElement('tr');
+                const headers = Object.keys(data[0]);
+                headerRow.className = 'bg-dark-3';
+                headers.forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.scope = 'col';
+                    th.className = 'py-\[6px\] text-lg text-center text-dark dark:text-white px-0 md:px-6';
+                    // A szótár alapján cseréljük a nevet, ha van egyezés, egyébként marad az eredeti
+                    th.textContent = displayNameMap[headerText] || headerText;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = 'bg-white dark:bg-dark-2 border-b border-stroke dark:border-dark-3';
+                    headers.forEach(header => {
+                        const td = document.createElement('td');
+                        td.className = 'py-\[6px\] px-0 md:px-6 text-base text-center text-body-color dark:text-white';
+                        td.textContent = typeof item[header] === 'object' && item[header] !== null ? JSON.stringify(item[header]) : item[header];
+                        row.appendChild(td);
+                    });
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+                tableContainer.appendChild(table);
+
+            } catch (error) {
+                tableContainer.innerHTML = `<p class="text-center text-red-500 py-4">Hiba: ${error.message}</p>`;
+            } finally {
+                loadingSpinner.classList.add('hidden');
+            }
+        });
+    });
+</script>

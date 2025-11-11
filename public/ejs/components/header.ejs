@@ -168,17 +168,18 @@
             </span>
           </label>
           <div class="hidden sm:flex">
-            <% if (role === 'regisztralt') { %>
+            <% if (role === 'regisztralt' || role === 'admin') { %>
               <span class="py-2 px-4 text-base font-medium text-black dark:text-white">
                 Üdv, <%= user.username %>
               </span>
               <a
-                href="/auth/signout"
+                id="logout-button"
+                href="#"
                 class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-red-500 hover:bg-red-600"
               >
                 Sign Out
               </a>
-            <% } else { %>
+            <% } else { %> <!-- Ha a szerepkör 'latogato' -->
               <a
                 href="/auth/signin"
                 class="loginBtn py-2 px-[22px] text-base font-medium text-black dark:text-white hover:opacity-70"
@@ -199,3 +200,25 @@
   </div>
 </div>
 <!-- ====== Navbar Section End -->
+
+<script>
+  // Kijelentkezés kezelése
+  document.addEventListener('DOMContentLoaded', () => {
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+      logoutButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        try {
+          const response = await fetch('/auth/logout', { method: 'POST' });
+          if (response.ok) {
+            window.location.href = '/'; // Sikeres kijelentkezés után átirányítás a főoldalra
+          } else {
+            console.error('Kijelentkezési hiba');
+          }
+        } catch (error) {
+          console.error('Hiba a kijelentkezés során:', error);
+        }
+      });
+    }
+  });
+</script>
