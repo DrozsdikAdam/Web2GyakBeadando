@@ -5,29 +5,21 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        nev: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isEmail: true
-            }
-        },
         uzenet: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-
-        // Hozzáadjuk a userId mezőt, ami a User modellre hivatkozik
         userId: {
             type: DataTypes.INTEGER,
-            allowNull: true, // Lehetővé tesszük a NULL értéket, ha vannak régi üzenetek felhasználó nélkül
+            allowNull: false,
+            references: {
+                model: 'users', // a users táblára hivatkozik
+                key: 'id'
+            }
         }
     }, {
-        tableName: 'messages'
+        tableName: 'messages',
+        timestamps: true // Automatikusan hozzáadja a createdAt és updatedAt mezőket
     });
 
     return Message;

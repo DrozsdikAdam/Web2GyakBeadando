@@ -1,6 +1,6 @@
 const express = require('express')
 const { isAuth, isAdmin } = require('../config/auth')
-const { Message } = require('../models/messages.model');
+const db = require('../models');
 
 const router = express.Router()
 
@@ -12,11 +12,9 @@ router.post('/send', isAuth, async (req, res) => {
         const { uzenet } = req.body;
         if (!uzenet) return res.status(400).json({ error: 'Hiányzó üzenet!' })
 
-        const saved = await Message.create({
-            nev: req.session.user.username,
-            email: req.session.user.email,
-            uzenet,
-            userId: req.session.user.id
+        const saved = await db.Message.create({
+            uzenet: uzenet,
+            userId: req.session.user.id // A bejelentkezett felhasználó ID-ja
         })
 
         res.status(200).json({ message: 'Üzenet elküldve', id: saved.id })
@@ -30,9 +28,15 @@ router.post('/send', isAuth, async (req, res) => {
 
 router.get('/', isAdmin, async (req, res) => {
     try {
-        /*const messages = await Message.findAll({ order: [["id", 'DESC']] })
-        res.json(messages);*/
-
+        // Üzenetek lekérése a hozzájuk tartozó felhasználói adatokkal (username, email)
+        const messages = await db.Message.findAll({
+            include: [{
+                model: db.User,
+                attributes: ['username', 'email'] // Csak ezeket a mezőket kérjük le a User táblából
+            }],
+            order: [['createdAt', 'DESC']] // Rendezés a legújabb üzenet szerint
+        });
+        res.json(messages);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Hiba az üzenetek lekérésekor' });
