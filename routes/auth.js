@@ -1,7 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcrypt');
-//felhasználó modell importálása
-const { User } = require('../models');
+const db = require('../models');
+const { Op } = db.Sequelize;
 
 const router = express.Router();
 
@@ -19,10 +19,10 @@ router.get('/signup', (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
-        if (!username || !email || !password) return res.status(400).json({ error: 'Hiányzó mezők!' })
+        if (!username || !email || !password) return res.status(400).json({ error: 'Hiányzó mezők!' });
 
-        const existing = await User.findOne({ where: { email: email } }); // <-- JAVÍTVA
-        if (existing) return res.status(409).json({ error: 'Email már foglalt!' });
+        const existing = await db.User.findOne({ where: { [Op.or]: [{ email: email }, { username: username }] } });
+        if (existing) return res.status(409).json({ error: 'A felhasználónév vagy az email cím már foglalt!' });
 
         const hash = await bcrypt.hash(password, 10); //password encoding
         const newUser = await User.create({
@@ -45,10 +45,16 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body; // 'email' helyett 'identifier'
 
-        const user = await User.findOne({ where: { email: email } });
-        if (!user) return res.status(401).json({ error: 'Hibás email' });
+        if (!identifier || !password) {
+            return res.status(400).json({ error: 'Hiányzó felhasználónév/email vagy jelszó!' });
+        }
+
+        const user = await db.User.findOne({
+            where: { [Op.or]: [{ email: identifier }, { username: identifier }] }
+        });
+        if (!user) return res.status(401).json({ error: 'Hibás felhasználónév vagy email cím!' });
 
         const ok = await bcrypt.compare(password, user.password)
         if (!ok) return res.status(401).json({ error: 'Hibás jelszó' })

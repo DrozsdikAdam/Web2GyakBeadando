@@ -4,6 +4,7 @@ const path = require("path")
 const fs = require("fs")
 const bodyParser = require("body-parser")
 const dotenv = require("dotenv")
+const bcrypt = require("bcrypt")
 const expressLayouts = require("express-ejs-layouts")
 const indexRoutes = require("./routes/index")
 const authRoutes = require("./routes/auth")
@@ -40,7 +41,7 @@ app.use(expressLayouts);
 app.use((req, res, next) => {
     res.locals.path = req.path;
     res.locals.user = req.session.user || null;
-    res.locals.role = req.session.role || 'latogato';
+    res.locals.role = (req.session.user && req.session.user.role) ? req.session.user.role : 'latogato';
     next();
 });
 
@@ -105,6 +106,31 @@ const seedDatabase = async () => {
             const eloadasok = parseTxtFile(path.join(dataDir, 'eloadas.txt'), ['filmid', 'moziid', 'datum', 'nezoszam', 'bevetel']);
             await db.Eloadas.bulkCreate(eloadasok);
             console.log("Előadások sikeresen betöltve.");
+        }
+
+        // Felhasználók feltöltése
+        if (await db.User.count() === 0) {
+            console.log("Users tábla üres, feltöltés alapértelmezett felhasználókkal...");
+
+            const saltRounds = 10;
+            const adminPassword = await bcrypt.hash('adminpassword', saltRounds);
+            const userPassword = await bcrypt.hash('userpassword', saltRounds);
+
+            await db.User.bulkCreate([
+                {
+                    username: 'admin',
+                    email: 'admin@example.com',
+                    password: adminPassword,
+                    role: 'admin'
+                },
+                {
+                    username: 'user',
+                    email: 'user@example.com',
+                    password: userPassword,
+                    role: 'regisztralt'
+                }
+            ]);
+            console.log("Alapértelmezett felhasználók sikeresen létrehozva.");
         }
 
     } catch (error) {
