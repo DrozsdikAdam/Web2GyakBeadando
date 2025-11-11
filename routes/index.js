@@ -1,6 +1,7 @@
 const express = require('express');
 const { isAuth, isAdmin } = require('../config/auth')
 const path = require('path');
+const db = require('../models');
 
 const router = express.Router();
 
@@ -13,7 +14,39 @@ router.get('/contact', (req, res) => {
 });
 
 router.get('/database', (req, res) => {
-    res.render('database', { path: req.path });
+    // Ezeket a táblákat fogjuk felajánlani a lenyíló menüben
+    const availableTables = ['Film', 'Mozi', 'Eloadas'];
+    res.render('database', {
+        path: req.path,
+        tables: availableTables,
+    });
+});
+
+// Új API végpont a táblaadatok lekérésére
+router.get('/database/data/:tableName', async (req, res) => {
+    const tableName = req.params.tableName;
+    const model = db[tableName];
+
+    if (!model) {
+        return res.status(404).json({ error: 'A megadott tábla nem létezik.' });
+    }
+
+    try {
+        let data;
+        // Ha a Message táblát kérjük le, hozzáfűzzük a felhasználó adatait is
+        if (tableName === 'Message') {
+            data = await db.Message.findAll({
+                include: [{ model: db.User, attributes: ['username'] }],
+                order: [['createdAt', 'DESC']]
+            });
+        } else {
+            data = await model.findAll();
+        }
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Hiba történt az adatok lekérése közben.' });
+    }
 });
 
 router.get('/uzenetek', isAdmin, (req, res) => {
