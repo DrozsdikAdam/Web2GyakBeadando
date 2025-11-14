@@ -43,4 +43,22 @@ router.get('/', isAdmin, async (req, res) => {
     }
 })
 
+// Bejelentkezett felhasználó saját üzeneteinek listázása
+router.get('/my', isAuth, async (req, res) => {
+    try {
+        const messages = await db.Message.findAll({
+            where: { userId: req.session.user.id },
+            include: [{
+                model: db.User,
+                attributes: ['username', 'email'] // Csak ezeket a mezőket kérjük le a User táblából
+            }],
+            order: [['createdAt', 'DESC']] // Rendezés a legújabb üzenet szerint
+        });
+        res.json(messages);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Hiba a saját üzenetek lekérésekor' });
+    }
+});
+
 module.exports = router;

@@ -1,2 +1,279 @@
-<%- include('components/contactComponents/banner') %>
-<%- include('components/contactComponents/contact') %>
+<!-- ====== Banner Section Start -->
+<div
+  class="relative z-10 overflow-hidden pt-[120px] pb-[60px] md:pt-[130px] lg:pt-[160px] dark:bg-dark"
+>
+  <div
+    class="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-stroke/0 via-stroke dark:via-dark-3 to-stroke/0"
+  ></div>
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap items-center -mx-4">
+      <div class="w-full px-4">
+        <div class="text-center">
+          <h1
+            class="mb-4 text-3xl font-bold text-dark dark:text-white sm:text-4xl md:text-[40px] md:leading-[1.2]"
+          >
+            Kapcsolat
+          </h1>
+          <ul class="flex items-center justify-center gap-[10px]">
+            <li>
+              <a
+                href="/"
+                class="flex items-center gap-[10px] text-base font-medium text-dark dark:text-white"
+              >
+                Home
+              </a>
+            </li>
+            <li>
+              <a
+                href="/contact"
+                class="flex items-center gap-[10px] text-base font-medium text-body-color"
+              >
+                <span class="text-body-color dark:text-dark-6"> / </span>
+                Kapcsolat
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ====== Banner Section End -->
+
+<!-- ====== Forms Section Start -->
+    <section class="bg-[#F4F7FF] py-14 lg:py-20 dark:bg-dark-2">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap -mx-4">
+      <div class="w-full px-4">
+        <div
+          class="wow fadeInUp relative mx-auto max-w-4xl overflow-hidden rounded-lg bg-white dark:bg-dark-2 py-14 px-8 sm:px-12 md:px-[60px]"
+          data-wow-delay=".15s"
+        >
+          <% if (role === 'admin') { %>
+            <h2 class="font-bold text-3xl sm:text-4xl text-dark dark:text-white mb-8 text-center">
+                Összes beérkezett üzenet
+            </h2>
+            <div id="messages-table-container" class="overflow-x-auto relative shadow-md sm:rounded-lg">
+                <!-- Az üzenetek táblázat ide lesz generálva -->
+            </div>
+            <div id="loading-spinner-admin" class="py-8 hidden text-center">
+                <p class="text-primary">Üzenetek betöltése...</p>
+            </div>
+          <% } else if (role === 'regisztralt') { %>
+            <div id="contact-layout-container">
+              <!-- Bal oszlop: Táblázat -->
+              <div>
+                <h2 class="font-bold text-3xl sm:text-4xl text-dark dark:text-white mb-8 text-center">
+                    Saját üzeneteim
+                </h2>
+                <div id="my-messages-table-container" class="overflow-x-auto relative shadow-md sm:rounded-lg mb-10 md:mb-0">
+                    <!-- A saját üzenetek táblázat ide lesz generálva -->
+                </div>
+                <div id="loading-spinner-user" class="text-center py-8 hidden">
+                    <p class="text-primary">Üzenetek betöltése...</p>
+                </div>
+              </div>
+
+              <!-- Jobb oszlop: Űrlap -->
+              <div>
+                <h2 class="font-bold text-3xl sm:text-4xl text-dark dark:text-white mb-8 text-center">
+                    Új üzenet küldése
+                </h2>
+                <form id="contact-form">
+                    <div class="mb-[22px]">
+                        <textarea
+                            rows="5"
+                            name="uzenet"
+                            placeholder="Ide írhatod üzeneted..."
+                            required
+                            class="w-full px-5 py-3 text-base transition bg-transparent border rounded-md outline-hidden border-stroke dark:border-dark-3 text-body-color dark:text-dark-6 placeholder:text-dark-6 focus:border-primary dark:focus:border-primary focus-visible:shadow-none"
+                        ></textarea>
+                    </div>
+                    <div class="mb-9">
+                        <button
+                            type="submit"
+                            class="w-full px-5 py-3 text-base text-white transition duration-300 ease-in-out border rounded-md cursor-pointer border-primary bg-primary hover:bg-blue-dark"
+                        >
+                            Üzenet küldése
+                        </button>
+                    </div>
+                </form>
+                <div id="form-message" class="text-sm mt-4 text-left"></div>
+              </div>
+            </div>
+          <% } else { %> <!-- latogato -->
+            <h2 class="font-bold text-3xl sm:text-4xl text-dark dark:text-white mb-8 text-center">
+                Üzenet küldése
+            </h2>
+            <p class="text-base text-body-color dark:text-dark-6 mb-8 text-center">
+                Kérjük, jelentkezzen be, hogy üzenetet küldhessen.
+            </p>
+            <a href="/auth/signin" class="w-full px-5 py-3 text-base text-white transition duration-300 ease-in-out border rounded-md cursor-pointer border-primary bg-primary hover:bg-blue-dark inline-block">
+                Bejelentkezés
+            </a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ====== Forms Section End -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const role = "<%= role %>"; // EJS változó átadása JS-nek
+
+        // Segédfüggvény a táblázat generálásához
+        const renderTable = (containerId, data, headers, headerKeys) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-center text-body-color dark:text-dark-6 py-4">Nincs megjeleníthető adat.</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full w-full text-sm text-left text-body-color dark:text-dark-6';
+
+            const thead = document.createElement('thead');
+            thead.className = 'text-xs font-semibold uppercase bg-gray-1 dark:bg-dark-3';
+            const headerRow = document.createElement('tr');
+            headerRow.className = 'bg-dark-3';
+
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.scope = 'col';
+                th.className = 'py-4 text-lg text-center text-dark dark:text-white px-6';
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'bg-white dark:bg-dark-2 border-b border-stroke dark:border-dark-3';
+                headerKeys.forEach(key => {
+                    const td = document.createElement('td');
+                    td.className = 'py-4 px-6 text-base text-center text-body-color dark:text-dark-6';
+                    // Kezeli a nested property-ket (pl. User.username)
+                    let value = item;
+                    key.split('.').forEach(part => {
+                        if (value && typeof value === 'object' && part in value) {
+                            value = value[part];
+                        } else {
+                            value = null;
+                        }
+                    });
+                    td.textContent = value !== null ? value : '';
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            container.innerHTML = ''; // Előző tartalom törlése
+            container.appendChild(table);
+        };
+
+        // Adminisztrátor nézet
+        if (role === 'admin') {
+            const loadingSpinner = document.getElementById('loading-spinner-admin');
+            loadingSpinner.classList.remove('hidden');
+            fetch('/uzenetek') // Az összes üzenet lekérése
+                .then(response => {
+                    if (!response.ok) throw new Error('Üzenetek betöltése sikertelen.');
+                    return response.json();
+                })
+                .then(messages => {
+                    const headers = ['ID', 'Felhasználó', 'Üzenet', 'Küldés ideje'];
+                    const headerKeys = ['id', 'User.username', 'uzenet', 'createdAt'];
+                    renderTable('messages-table-container', messages, headers, headerKeys);
+                })
+                .catch(error => {
+                    document.getElementById('messages-table-container').innerHTML = `<p class="text-center text-red-500 py-4">Hiba: ${error.message}</p>`;
+                    console.error('Hiba az admin üzenetek betöltésekor:', error);
+                })
+                .finally(() => {
+                    loadingSpinner.classList.add('hidden');
+                });
+        }
+
+        // Regisztrált felhasználó nézet (saját üzenetek + űrlap)
+        if (role === 'regisztralt') {
+            const loadingSpinner = document.getElementById('loading-spinner-user');
+            loadingSpinner.classList.remove('hidden');
+            fetch('/uzenetek/my') // Saját üzenetek lekérése
+                .then(response => {
+                    if (!response.ok) throw new Error('Saját üzenetek betöltése sikertelen.');
+                    return response.json();
+                })
+                .then(messages => {
+                    const headers = ['ID', 'Üzenet', 'Küldés ideje'];
+                    const headerKeys = ['id', 'uzenet', 'createdAt'];
+                    renderTable('my-messages-table-container', messages, headers, headerKeys);
+                })
+                .catch(error => {
+                    document.getElementById('my-messages-table-container').innerHTML = `<p class="text-center text-red-500 py-4">Hiba: ${error.message}</p>`;
+                    console.error('Hiba a saját üzenetek betöltésekor:', error);
+                })
+                .finally(() => {
+                    loadingSpinner.classList.add('hidden');
+                });
+
+            // Űrlap küldésének kezelése
+            const contactForm = document.getElementById('contact-form');
+            const formMessageDiv = document.getElementById('form-message');
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    formMessageDiv.textContent = '';
+                    formMessageDiv.className = 'text-sm mt-4 text-left'; // Reset class
+
+                    const formData = new FormData(contactForm);
+                    const data = Object.fromEntries(formData.entries());
+
+                    try {
+                        const response = await fetch('/uzenetek/send', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data),
+                        });
+
+                        const result = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(result.error || 'Ismeretlen hiba történt.');
+                        }
+
+                        formMessageDiv.textContent = 'Üzenet sikeresen elküldve!';
+                        formMessageDiv.classList.add('text-green-500');
+                        contactForm.reset(); // Űrlap ürítése
+                        // Frissítjük a saját üzenetek listáját
+                        const messagesResponse = await fetch('/uzenetek/my');
+                        const messages = await messagesResponse.json();
+                        const headers = ['ID', 'Üzenet', 'Küldés ideje'];
+                        const headerKeys = ['id', 'uzenet', 'createdAt'];
+                        renderTable('my-messages-table-container', messages, headers, headerKeys);
+                    } catch (error) {
+                        formMessageDiv.textContent = error.message;
+                        formMessageDiv.classList.add('text-red-500');
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<style>
+  @media (min-width: 768px) {
+    #contact-layout-container {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem; /* Tailwind 'gap-8' */
+    }
+  }
+</style>
