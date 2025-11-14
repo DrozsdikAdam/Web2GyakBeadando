@@ -25,7 +25,11 @@ router.get('/stats', isAdmin, async (req, res) => {
 // Példa admin: felhasználók listája  
 router.get('/felhasznalok', isAdmin, async (req, res) => {
     try {
-        const users = await db.User.findAll({ attributes: ['id', 'username', 'email', 'role'] });
+        const users = await db.User.findAll({
+            attributes: ['id', 'username', 'email', 'role'],
+            limit: 25, // Maximum 25 felhasználó lekérése
+            order: [['id', 'ASC']] // Rendezés felhasználónév szerint, ábécé sorrendben
+        });
         res.json(users);
     } catch (err) {
         console.error(err);
