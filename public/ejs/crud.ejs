@@ -1,2 +1,206 @@
- <%- include('components/crudComponents/banner') %>
- <%- include('components/crudComponents/blog') %>
+<!-- ====== Banner Section Start -->
+<div class="relative z-10 overflow-hidden pt-[120px] pb-[60px] md:pt-[130px] lg:pt-[160px] dark:bg-dark">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center -mx-4">
+            <div class="w-full px-4">
+                <div class="text-center">
+                    <h1 class="mb-4 text-3xl font-bold text-dark dark:text-white sm:text-4xl md:text-[40px] md:leading-[1.2]">
+                        Film Adatbázis Kezelő
+                    </h1>
+                    <p class="mb-5 text-base text-body-color dark:text-dark-6">
+                        Itt hozhatsz létre, módosíthatsz és törölhetsz filmeket.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ====== Banner Section End -->
+
+<!-- ====== CRUD Section Start -->
+<section class="py-14 lg:py-20 dark:bg-dark-2">
+    <div class="container mx-auto px-4">
+        <!-- Űrlap -->
+        <div class="wow fadeInUp relative mx-auto max-w-4xl overflow-hidden rounded-lg bg-white dark:bg-dark-2 py-14 px-8 text-center sm:px-12 md:px-[60px] mb-12 shadow-lg" data-wow-delay=".15s">
+            <h2 id="form-title" class="font-bold text-3xl text-dark dark:text-white mb-8">Új Film Hozzáadása</h2>
+            <form id="film-form">
+                <input type="hidden" id="film-id" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <input type="text" id="film-cim" name="cim" placeholder="Film címe" required class="w-full rounded-md border border-stroke dark:border-dark-3 bg-transparent py-3 px-5 text-black dark:text-white placeholder:text-dark-6 outline-none focus:border-primary">
+                    <input type="number" id="film-ev" name="ev" placeholder="Év" class="w-full rounded-md border border-stroke dark:border-dark-3 bg-transparent py-3 px-5 text-black dark:text-white placeholder:text-dark-6 outline-none focus:border-primary">
+                    <input type="number" id="film-hossz" name="hossz" placeholder="Hossz (perc)" class="w-full rounded-md border border-stroke dark:border-dark-3 bg-transparent py-3 px-5 text-black dark:text-white placeholder:text-dark-6 outline-none focus:border-primary">
+                </div>
+                <div class="flex gap-4 justify-center">
+                    <button type="submit" class="px-8 py-3 text-base font-medium text-white transition duration-300 ease-in-out rounded-md bg-primary hover:bg-blue-dark">
+                        Mentés
+                    </button>
+                    <button type="button" id="cancel-edit-btn" class="px-8 py-3 text-base font-medium text-dark dark:text-white transition duration-300 ease-in-out rounded-md bg-gray-2 dark:bg-dark-3 hover:opacity-80 hidden">
+                        Mégse
+                    </button>
+                </div>
+            </form>
+            <div id="form-message" class="text-sm mt-4 text-left"></div>
+        </div>
+
+        <!-- Táblázat -->
+        <div id="films-table-container" class="overflow-x-auto relative shadow-md sm:rounded-lg">
+            <!-- A filmek táblázata ide lesz generálva -->
+        </div>
+        <div id="loading-spinner" class="text-center py-8">
+            <p class="text-primary">Filmek betöltése...</p>
+        </div>
+    </div>
+</section>
+<!-- ====== CRUD Section End -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tableContainer = document.getElementById('films-table-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const form = document.getElementById('film-form');
+        const formTitle = document.getElementById('form-title');
+        const filmIdInput = document.getElementById('film-id');
+        const filmCimInput = document.getElementById('film-cim');
+        const filmEvInput = document.getElementById('film-ev');
+        const filmHosszInput = document.getElementById('film-hossz');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const formMessage = document.getElementById('form-message');
+
+        const apiBaseUrl = '/crud/films';
+
+        // READ - Filmek betöltése és táblázat renderelése
+        const fetchAndRenderFilms = async () => {
+            loadingSpinner.classList.remove('hidden');
+            tableContainer.innerHTML = '';
+            try {
+                const response = await fetch(apiBaseUrl);
+                const films = await response.json();
+
+                if (films.length === 0) {
+                    tableContainer.innerHTML = '<p class="text-center text-body-color dark:text-dark-6 py-4">Nincsenek filmek az adatbázisban.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.className = 'min-w-full w-full text-sm text-left text-body-color dark:text-dark-6';
+
+                // Fejléc
+                table.innerHTML = `
+                    <thead class="text-xs font-semibold uppercase bg-gray-1 dark:bg-dark-3">
+                        <tr class="bg-dark-3">
+                            <th class="py-\[6px\] px-6 text-lg text-center text-dark dark:text-white">ID</th>
+                            <th class="py-\[6px\] px-6 text-lg text-left text-dark dark:text-white">Cím</th>
+                            <th class="py-\[6px\] px-6 text-lg text-center text-dark dark:text-white">Év</th>
+                            <th class="py-\[6px\] px-6 text-lg text-center text-dark dark:text-white">Hossz</th>
+                            <th class="py-\[6px\] px-6 text-lg text-center text-dark dark:text-white">Műveletek</th>
+                        </tr>
+                    </thead>
+                `;
+
+                // Sorok
+                const tbody = document.createElement('tbody');
+                films.forEach(film => {
+                    const row = document.createElement('tr');
+                    row.className = 'bg-white dark:bg-dark-2 border-b border-stroke dark:border-dark-3';
+                    row.innerHTML = `
+                        <td class="py-\[6px\] px-6 text-base text-center">${film.id}</td>
+                        <td class="py-\[6px\] px-6 text-base text-left">${film.cim}</td>
+                        <td class="py-\[6px\] px-6 text-base text-center">${film.ev || ''}</td>
+                        <td class="py-\[6px\] px-6 text-base text-center">${film.hossz || ''}</td>
+                        <td class="py-\[6px\] px-6 text-base text-center">
+                            <button data-id="${film.id}" class="edit-btn text-primary hover:underline mr-4">Szerkeszt</button>
+                            <button data-id="${film.id}" class="delete-btn hover:underline" style="color: #D64937;">Töröl</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+                tableContainer.appendChild(table);
+
+            } catch (error) {
+                tableContainer.innerHTML = `<p class="text-center text-red-500 py-4">Hiba: ${error.message}</p>`;
+            } finally {
+                loadingSpinner.classList.add('hidden');
+            }
+        };
+
+        // CREATE / UPDATE
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = filmIdInput.value;
+            const filmData = {
+                cim: filmCimInput.value,
+                ev: filmEvInput.value || null,
+                hossz: filmHosszInput.value || null,
+            };
+
+            const isUpdating = !!id;
+            const url = isUpdating ? `${apiBaseUrl}/${id}` : apiBaseUrl;
+            const method = isUpdating ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filmData),
+                });
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'Mentési hiba.');
+                }
+                resetForm();
+                fetchAndRenderFilms();
+            } catch (error) {
+                formMessage.textContent = error.message;
+                formMessage.className = 'text-sm mt-4 text-left text-red-500';
+            }
+        });
+
+        // Művelet gombok (Szerkesztés / Törlés) kezelése
+        tableContainer.addEventListener('click', async (e) => {
+            const target = e.target;
+            const id = target.dataset.id;
+
+            // UPDATE - Űrlap feltöltése szerkesztéshez
+            if (target.classList.contains('edit-btn')) {
+                const filmToEdit = (await (await fetch(`${apiBaseUrl}`)).json()).find(f => f.id == id);
+                if (filmToEdit) {
+                    formTitle.textContent = 'Film Szerkesztése';
+                    filmIdInput.value = filmToEdit.id;
+                    filmCimInput.value = filmToEdit.cim;
+                    filmEvInput.value = filmToEdit.ev;
+                    filmHosszInput.value = filmToEdit.hossz;
+                    cancelEditBtn.classList.remove('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            // DELETE
+            if (target.classList.contains('delete-btn')) {
+                if (confirm(`Biztosan törölni szeretnéd a filmet (ID: ${id})?`)) {
+                    try {
+                        const response = await fetch(`${apiBaseUrl}/${id}`, { method: 'DELETE' });
+                        if (!response.ok) throw new Error('Törlési hiba.');
+                        fetchAndRenderFilms();
+                    } catch (error) {
+                        alert(error.message);
+                    }
+                }
+            }
+        });
+
+        // Szerkesztés megszakítása
+        const resetForm = () => {
+            formTitle.textContent = 'Új Film Hozzáadása';
+            form.reset();
+            filmIdInput.value = '';
+            cancelEditBtn.classList.add('hidden');
+            formMessage.textContent = '';
+        };
+
+        cancelEditBtn.addEventListener('click', resetForm);
+
+        // Kezdeti betöltés
+        fetchAndRenderFilms();
+    });
+</script>
