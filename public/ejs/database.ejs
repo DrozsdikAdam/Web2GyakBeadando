@@ -34,6 +34,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const basePath = '<%= basePath %>';
         const tableSelect = document.getElementById('table-select');
         const tableContainer = document.getElementById('table-container');
         const loadingSpinner = document.getElementById('loading-spinner');
@@ -70,7 +71,7 @@
             loadingSpinner.classList.remove('hidden');
 
             try {
-                const response = await fetch(`/database/data/${tableName}`);
+                const response = await fetch(`${basePath}/database/data/${tableName}`);
                 if (!response.ok) {
                     throw new Error('Hálózati hiba történt.');
                 }

@@ -21,7 +21,7 @@
           <ul class="flex items-center justify-center gap-[10px]">
             <li>
               <a
-                href="/"
+                href="<%= basePath %>/"
                 class="flex items-center gap-[10px] text-base font-medium text-dark dark:text-white"
               >
                 Home
@@ -103,13 +103,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const basePath = '<%= basePath %>';
         const usersTableContainer = document.getElementById('users-table-container');
         const loadingSpinner = document.getElementById('loading-spinner');
 
         // Statisztikák betöltése
         const fetchStats = async () => {
             try {
-                const response = await fetch('/admin/stats');
+                const response = await fetch(`${basePath}/admin/stats`);
                 if (!response.ok) throw new Error('Statisztika betöltése sikertelen.');
                 const stats = await response.json();
 
@@ -125,7 +126,7 @@
         const fetchUsers = async () => {
             loadingSpinner.classList.remove('hidden');
             try {
-                const response = await fetch('/admin/felhasznalok');
+                const response = await fetch(`${basePath}/admin/felhasznalok`);
                 if (!response.ok) throw new Error('Felhasználók betöltése sikertelen.');
                 const users = await response.json();
 

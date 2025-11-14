@@ -55,6 +55,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const basePath = '<%= basePath %>';
         const tableContainer = document.getElementById('films-table-container');
         const loadingSpinner = document.getElementById('loading-spinner');
         const form = document.getElementById('film-form');
@@ -66,7 +67,7 @@
         const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const formMessage = document.getElementById('form-message');
 
-        const apiBaseUrl = '/crud/films';
+        const apiBaseUrl = `${basePath}/crud/films`;
 
         // READ - Filmek betöltése és táblázat renderelése
         const fetchAndRenderFilms = async () => {

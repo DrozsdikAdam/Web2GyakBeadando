@@ -12,7 +12,7 @@
                 class="mb-6 inline-block max-w-[160px]"
               >
                 <img
-                  src="../images/logo/logo-white.svg"
+                  src="<%= basePath %>/images/logo/logo-white.svg"
                   alt="logo"
                   class="max-w-full"
                 />
@@ -28,7 +28,7 @@
               <ul>
                 <li>
                   <a
-                    href="/"
+                    href="<%= basePath %>/"
                     class="inline-block mb-3 text-base text-gray-7 hover:text-primary"
                   >
                     Főoldal
@@ -36,7 +36,7 @@
                 </li>
                 <li>
                   <a
-                    href="/crud"
+                    href="<%= basePath %>/database"
                     class="inline-block mb-3 text-base text-gray-7 hover:text-primary"
                   >
                     Adatbázis
@@ -44,7 +44,7 @@
                 </li>
                 <li>
                   <a
-                    href="/contact"
+                    href="<%= basePath %>/contact"
                     class="inline-block mb-3 text-base text-gray-7 hover:text-primary"
                   >
                     Kapcsolat
@@ -152,11 +152,11 @@
 
       <div>
         <span class="absolute left-0 top-0 z-[-1]">
-          <img src="../images/footer/shape-1.svg" alt="" class="w-full h-full" />
+          <img src="<%= basePath %>/images/footer/shape-1.svg" alt="" class="w-full h-full" />
         </span>
 
         <span class="absolute bottom-0 right-0 z-[-1]">
-          <img src="../images/footer/shape-3.svg" alt="" class="w-full h-full" />
+          <img src="<%= basePath %>/images/footer/shape-3.svg" alt="" class="w-full h-full" />
         </span>
 
         <span class="absolute top-0 right-0 z-[-1]">
@@ -430,6 +430,6 @@
     <!-- ====== Back To Top End -->
 
     <!-- ====== All Scripts -->
-    <script src="../js/main.js"></script>
+    <script src="<%= basePath %>/js/main.js"></script>
   </body>
 </html>

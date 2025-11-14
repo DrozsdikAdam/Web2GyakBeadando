@@ -6,18 +6,18 @@ const db = require('../models');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.render('index', { path: req.path });
+    res.render('index', { path: res.locals.path });
 });
 
 router.get('/contact', (req, res) => {
-    res.render('contact', { path: req.path });
+    res.render('contact', { path: res.locals.path });
 });
 
 router.get('/database', (req, res) => {
     // Ezeket a táblákat fogjuk felajánlani a lenyíló menüben
     const availableTables = ['Film', 'Mozi', 'Eloadas'];
     res.render('database', {
-        path: req.path,
+        path: res.locals.path,
         tables: availableTables,
     });
 });
@@ -45,15 +45,11 @@ router.get('/database/data/:tableName', async (req, res) => {
 });
 
 router.get('/crud', isAuth, (req, res) => {
-    res.render('crud', { path: '/crud' });
+    res.render('crud', { path: res.locals.path });
 });
 
 router.get('/admin', isAdmin, (req, res) => {
-    res.render('admin', { path: '/admin' });
-});
-
-router.get('/', isAdmin, (req, res) => {
-    res.render('admin', { path: '/admin' });
+    res.render('admin', { path: res.locals.path });
 });
 
 module.exports = router;

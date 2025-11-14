@@ -17,7 +17,7 @@
           <ul class="flex items-center justify-center gap-[10px]">
             <li>
               <a
-                href="index.html"
+                href="<%= basePath %>/"
                 class="flex items-center gap-[10px] text-base font-medium text-dark dark:text-white"
               >
                 Home
@@ -45,7 +45,7 @@
     <div class="flex flex-wrap items-center -mx-4">
       <div class="w-full px-4 md:w-5/12 lg:w-6/12">
         <div class="text-center">
-          <img src="../images/404.svg" alt="image" class="max-w-full mx-auto" />
+          <img src="<%= basePath %>/images/404.svg" alt="image" class="max-w-full mx-auto" />
         </div>
       </div>
       <div class="w-full px-4 md:w-7/12 lg:w-6/12 xl:w-5/12">
@@ -91,7 +91,7 @@
             been moved or deleted.
           </p>
           <a
-            href="javascript:void(0)"
+            href="<%= basePath %>/"
             class="py-3 text-base font-medium text-white transition rounded-md bg-dark px-7 hover:bg-primary"
           >
             Go To Home

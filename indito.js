@@ -1,6 +1,7 @@
 const express = require("express")
 const session = require("express-session")
 const path = require("path")
+const { URL } = require("url")
 const fs = require("fs")
 const bodyParser = require("body-parser")
 const dotenv = require("dotenv")
@@ -15,7 +16,10 @@ const adminRoutes = require("./routes/admin")
 dotenv.config();
 const app = express();
 
-app.use(express.static('public'));
+const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}/`;
+const BASE_PATH = new URL(BASE_URL).pathname;
+
+app.use(BASE_PATH, express.static(path.join(__dirname, 'public')));
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'public', 'ejs'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,24 +43,25 @@ app.use(expressLayouts);
 
 // Global variables for all views
 app.use((req, res, next) => {
-    res.locals.path = req.path;
+    res.locals.path = req.path.startsWith(BASE_PATH) ? req.path.substring(BASE_PATH.length - 1) : req.path;
+    // Ha a BASE_PATH '/', akkor a req.path marad, ahogy van.
+    // Ha a BASE_PATH pl. '/app/', akkor a '/app/contact' útvonalból '/contact' lesz.
+    res.locals.path = req.path.startsWith(BASE_PATH) && BASE_PATH !== '/'
+        ? req.path.substring(BASE_PATH.length - 1)
+        : req.path;
     res.locals.user = req.session.user || null;
     res.locals.role = (req.session.user && req.session.user.role) ? req.session.user.role : 'latogato';
+    res.locals.basePath = BASE_PATH === '/' ? '' : BASE_PATH;
+    res.locals.basePath = BASE_PATH.endsWith('/') && BASE_PATH.length > 1 ? BASE_PATH.slice(0, -1) : BASE_PATH;
     next();
 });
 
 // routes
-app.use("/", indexRoutes)
-app.use("/auth", authRoutes)
-app.use("/crud", crudRoutes)
-app.use("/uzenetek", uzenetRoutes)
-app.use("/admin", adminRoutes)
-
-// 404-es oldal kezelése - minden nem létező útvonalat ide irányítunk
-app.use((req, res, next) => {
-    res.status(404).render('404', { title: 'Oldal nem található' });
-});
-
+app.use(BASE_PATH, indexRoutes)
+app.use(path.join(BASE_PATH, "/auth"), authRoutes)
+app.use(path.join(BASE_PATH, "/crud"), crudRoutes)
+app.use(path.join(BASE_PATH, "/uzenetek"), uzenetRoutes)
+app.use(path.join(BASE_PATH, "/admin"), adminRoutes)
 
 /**
  * Beolvas egy ANSI kódolású, pontosvesszővel tagolt TXT fájlt, kihagyja a fejlécet,
@@ -148,7 +153,13 @@ const startServer = async () => {
         await seedDatabase(); // Adatbázis feltöltése
 
         //server indítás
-        const PORT = process.env.PORT || 3000
+        const PORT = process.env.PORT || 3000;
+
+        // 404-es oldal kezelése - a routerek után kell elhelyezni
+        app.use((req, res, next) => {
+            res.status(404).render('404', { title: 'Oldal nem található', layout: 'layout' });
+        });
+
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
     } catch (err) {
         console.error("Szerver indítási hiba (DB probléma):", err);

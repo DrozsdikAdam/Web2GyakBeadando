@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= typeof title !== 'undefined' ? title + ' | FilmDB' : 'FilmDB' %></title>
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/animate.css">
-    <link rel="stylesheet" href="/css/swiper-bundle.min.css">
+    <link rel="shortcut icon" href="<%= basePath %>/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="<%= basePath %>/css/animate.css">
+    <link rel="stylesheet" href="<%= basePath %>/css/swiper-bundle.min.css">
     <!-- ==== WOW JS ==== -->
-    <script src="/js/wow.min.js"></script>
+    <script src="<%= basePath %>/js/wow.min.js"></script>
     <script>
         new WOW().init();
     </script>
@@ -18,6 +18,6 @@
     <%- include('components/header') %>
     <%- body %>
     <%- include('components/footer') %>
-    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="<%= basePath %>/css/tailwind.css">
 </body>
 </html>

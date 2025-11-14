@@ -7,12 +7,12 @@ const router = express.Router();
 
 // Render signin page
 router.get('/signin', (req, res) => {
-    res.render('signin', { path: '/auth/signin' });
+    res.render('signin', { path: res.locals.path });
 });
 
 // Render signup page
 router.get('/signup', (req, res) => {
-    res.render('signup', { path: '/auth/signup' });
+    res.render('signup', { path: res.locals.path });
 });
 
 //Regisztráció

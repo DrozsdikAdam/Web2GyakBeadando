@@ -5,14 +5,14 @@
   <div class="container mx-auto px-4">
     <div class="relative flex items-center justify-between -mx-4">
       <div class="max-w-full px-4 w-60">
-        <a href="/" class="block w-full py-5 navbar-logo">
+        <a href="<%= basePath %>/" class="block w-full py-5 navbar-logo">
           <img
-            src="/images/logo/logo.svg"
+            src="<%= basePath %>/images/logo/logo.svg"
             alt="logo"
             class="w-full dark:hidden"
           />
           <img
-            src="/images/logo/logo-white.svg"
+            src="<%= basePath %>/images/logo/logo-white.svg"
             alt="logo"
             class="hidden w-full dark:block"
           />
@@ -41,7 +41,7 @@
             <ul class="blcok lg:flex 2xl:ml-20">
               <li class="relative group">
                 <a
-                  href="/"
+                  href="<%= basePath %>/"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/' ? 'text-black dark:text-primary' : '' %>"
                 >
                   Főoldal
@@ -50,7 +50,7 @@
               <% if (role === 'admin') { %>
               <li class="relative group">
                 <a
-                  href="/admin"
+                  href="<%= basePath %>/admin"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/admin' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   Admin Page
@@ -60,7 +60,7 @@
               <% if (role === 'regisztralt') { %>
               <li class="relative group">
                 <a
-                  href="/crud"
+                  href="<%= basePath %>/crud"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/crud' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   CRUD
@@ -69,7 +69,7 @@
               <% } %>
               <li class="relative group">
                 <a
-                  href="/database"
+                  href="<%= basePath %>/database"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/database' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   Adatbázis
@@ -77,7 +77,7 @@
               </li>
               <li class="relative group">
                 <a
-                  href="/contact"
+                  href="<%= basePath %>/contact"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/contact' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   Kapcsolat
@@ -173,13 +173,13 @@
               </a>
             <% } else { %> <!-- Ha a szerepkör 'latogato' -->
               <a
-                href="/auth/signin"
+                href="<%= basePath %>/auth/signin"
                 class="loginBtn py-2 px-[22px] text-base font-medium text-black dark:text-white hover:opacity-70"
               >
                 Bejelentkezés
               </a>
               <a
-                href="/auth/signup"
+                href="<%= basePath %>/auth/signup"
                 class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-primary hover:bg-blue-dark"
               >
                 Regisztráció
@@ -196,14 +196,15 @@
 <script>
   // Kijelentkezés kezelése
   document.addEventListener('DOMContentLoaded', () => {
+    const basePath = '<%= basePath %>';
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
       logoutButton.addEventListener('click', async (event) => {
         event.preventDefault();
         try {
-          const response = await fetch('/auth/logout', { method: 'POST' });
+          const response = await fetch(`${basePath}/auth/logout`, { method: 'POST' });
           if (response.ok) {
-            window.location.href = '/'; // Sikeres kijelentkezés után átirányítás a főoldalra
+            window.location.href = basePath === '' ? '/' : basePath; // Sikeres kijelentkezés után átirányítás a főoldalra
           } else {
             console.error('Kijelentkezési hiba');
           }

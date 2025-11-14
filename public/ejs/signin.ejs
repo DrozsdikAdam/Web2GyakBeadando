@@ -17,7 +17,7 @@
           <ul class="flex items-center justify-center gap-[10px]">
             <li>
               <a
-                href="index.html"
+                href="<%= basePath %>/"
                 class="flex items-center gap-[10px] text-base font-medium text-dark dark:text-white"
               >
                 Home
@@ -55,12 +55,12 @@
               class="mx-auto inline-block max-w-[160px]"
             >
               <img
-                src="../images/logo/logo.svg"
+                src="<%= basePath %>/images/logo/logo.svg"
                 alt="logo"
                 class="dark:hidden"
               />
               <img
-                src="../images/logo/logo-white.svg"
+                src="<%= basePath %>/images/logo/logo-white.svg"
                 alt="logo"
                 class="hidden dark:block"
               />
@@ -104,7 +104,7 @@
           </a>
           <p class="text-base text-body-secondary">
             Not a member yet?
-            <a href="/auth/signup" class="text-primary hover:underline">
+            <a href="<%= basePath %>/auth/signup" class="text-primary hover:underline">
               Sign Up
             </a>
           </p>
@@ -336,6 +336,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const basePath = '<%= basePath %>';
         const form = document.getElementById('login-form');
         const errorMessageDiv = document.getElementById('error-message');
 
@@ -347,7 +348,7 @@
             const data = Object.fromEntries(formData.entries());
 
             try {
-                const response = await fetch('/auth/login', {
+                const response = await fetch(`${basePath}/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -362,7 +363,7 @@
                 }
 
                 // Sikeres bejelentkezés esetén átirányítás a főoldalra
-                window.location.href = '/';
+                window.location.href = basePath === '' ? '/' : basePath;
 
             } catch (error) {
                 errorMessageDiv.textContent = error.message;
