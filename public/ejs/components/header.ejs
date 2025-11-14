@@ -44,7 +44,7 @@
                   href="/"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/' ? 'text-black dark:text-primary' : '' %>"
                 >
-                  Home
+                  Főoldal
                 </a>
               </li>
               <% if (role === 'admin') { %>
@@ -54,14 +54,6 @@
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/admin' ? 'text-primary dark:text-primary' : '' %>"
                 >
                   Admin Page
-                </a>
-              </li>
-              <li class="relative group">
-                <a
-                  href="/uzenetek"
-                  class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/uzenetek' ? 'text-primary dark:text-primary' : '' %>"
-                >
-                  Messages
                 </a>
               </li>
               <% } %>
@@ -80,7 +72,7 @@
                   href="/database"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/database' ? 'text-primary dark:text-primary' : '' %>"
                 >
-                  Database
+                  Adatbázis
                 </a>
               </li>
               <li class="relative group">
@@ -88,7 +80,7 @@
                   href="/contact"
                   class="flex py-2 mx-8 text-base font-medium ud-menu-scroll text-black dark:text-white lg:mr-0 lg:inline-flex lg:py-6 lg:px-0 lg:text-black dark:lg:text-black-6 <%= path === '/contact' ? 'text-primary dark:text-primary' : '' %>"
                 >
-                  Contact
+                  Kapcsolat
                 </a>
               </li>
             </ul>
@@ -175,22 +167,22 @@
               <a
                 id="logout-button"
                 href="#"
-                class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-red-500 hover:bg-red-600"
+                class="px-6 py-2 text-base font-medium text-dark dark:text-white duration-300 ease-in-out rounded-md bg-red-500 hover:bg-red-600"
               >
-                Sign Out
+                Kijelentkezés
               </a>
             <% } else { %> <!-- Ha a szerepkör 'latogato' -->
               <a
                 href="/auth/signin"
                 class="loginBtn py-2 px-[22px] text-base font-medium text-black dark:text-white hover:opacity-70"
               >
-                Sign In
+                Bejelentkezés
               </a>
               <a
                 href="/auth/signup"
                 class="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md signUpBtn bg-primary hover:bg-blue-dark"
               >
-                Sign Up
+                Regisztráció
               </a>
             <% } %>
           </div>
