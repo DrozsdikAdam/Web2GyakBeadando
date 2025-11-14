@@ -33,17 +33,10 @@ router.get('/database/data/:tableName', async (req, res) => {
 
     try {
         let data;
-        // Ha a Message táblát kérjük le, hozzáfűzzük a felhasználó adatait is
-        if (tableName === 'Message') {
-            data = await db.Message.findAll({
-                include: [{ model: db.User, attributes: ['username'] }],
-                order: [['createdAt', 'DESC']]
-            });
-        } else {
-            data = await model.findAll({
-                order: [['id', 'ASC']] // Rendezés az 'id' oszlop alapján növekvő sorrendben
-            });
-        }
+
+        data = await model.findAll({
+            order: [['id', 'ASC']] // Rendezés az 'id' oszlop alapján növekvő sorrendben
+        });
         res.json(data);
     } catch (error) {
         console.error(error);
