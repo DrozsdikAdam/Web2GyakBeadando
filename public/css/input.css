@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap")
-layer(base);
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap") layer(base);
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -49,6 +48,7 @@ layer(base);
 }
 
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -56,10 +56,12 @@ layer(base);
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
   body {
     font-family: "Inter", sans-serif;
   }
@@ -79,15 +81,18 @@ layer(base);
   @apply bg-dark dark:bg-white;
 }
 
-.sticky #navbarCollapse li > a {
+.sticky #navbarCollapse li>a {
   @apply text-dark dark:text-white hover:text-primary dark:hover:text-primary hover:opacity-100;
 }
+
 #navbarCollapse li .ud-menu-scroll.active {
   @apply opacity-70;
 }
+
 .sticky #navbarCollapse li .ud-menu-scroll.active {
   @apply opacity-100 text-primary;
 }
+
 .sticky .loginBtn {
   @apply text-dark dark:text-white hover:text-primary dark:hover:text-primary hover:opacity-100;
 }
@@ -96,17 +101,23 @@ layer(base);
   @apply text-white bg-primary hover:bg-blue-dark hover:text-white;
 }
 
-.sticky #themeSwitcher ~ span {
+.sticky .logoutBtn {
+  @apply text-dark dark:text-white hover:text-primary dark:hover:text-primary hover:opacity-100;
+}
+
+.sticky #themeSwitcher~span {
   @apply text-dark dark:text-white;
 }
 
-.navbarTogglerActive > span:nth-child(1) {
+.navbarTogglerActive>span:nth-child(1) {
   @apply top-[7px] rotate-45 transform;
 }
-.navbarTogglerActive > span:nth-child(2) {
+
+.navbarTogglerActive>span:nth-child(2) {
   @apply opacity-0;
 }
-.navbarTogglerActive > span:nth-child(3) {
+
+.navbarTogglerActive>span:nth-child(3) {
   @apply top-[-8px] rotate-[135deg];
 }
 
@@ -117,7 +128,7 @@ layer(base);
 
 .common-carousel .swiper-button-next,
 .common-carousel .swiper-button-prev {
-  @apply static! h-12 w-12 rounded-lg bg-white dark:bg-dark shadow-testimonial-btn text-dark dark:text-white m-0 ease-out duration-200 hover:bg-primary hover:text-white hover:shadow-none;
+  @apply static ! h-12 w-12 rounded-lg bg-white dark:bg-dark shadow-testimonial-btn text-dark dark:text-white m-0 ease-out duration-200 hover:bg-primary hover:text-white hover:shadow-none;
 }
 
 .common-carousel .swiper-button-next svg,
