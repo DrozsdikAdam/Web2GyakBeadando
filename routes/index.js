@@ -40,17 +40,15 @@ router.get('/database/data/:tableName', async (req, res) => {
                 order: [['createdAt', 'DESC']]
             });
         } else {
-            data = await model.findAll();
+            data = await model.findAll({
+                order: [['id', 'ASC']] // Rendezés az 'id' oszlop alapján növekvő sorrendben
+            });
         }
         res.json(data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Hiba történt az adatok lekérése közben.' });
     }
-});
-
-router.get('/uzenetek', isAdmin, (req, res) => {
-    res.render('messages', { path: '/messages' });
 });
 
 router.get('/crud', isAuth, (req, res) => {
